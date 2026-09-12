@@ -1,0 +1,72 @@
+@using MvC_SystemMovies.Areas.Admin.Models
+@model List<UserListItemViewModel>
+@{
+    ViewData["Title"] = "Users";
+}
+
+<div class="container">
+    <div class="row mb-3 align-items-center my-3">
+        <div class="col-md-6">
+            <h2 class="display-6">Users</h2>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Full name</th>
+                        <th>Confirmed</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                        <tr>
+                            <td>@user.Email</td>
+                            <td>@user.FullName</td>
+                            <td>@(user.EmailConfirmed ? "Yes" : "No")</td>
+                            <td>@string.Join(", ", user.Roles)</td>
+                            <td>
+                                @if (user.IsBlocked)
+                                {
+                                    <span class="badge bg-danger">Blocked</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success">Active</span>
+                                }
+                            </td>
+                            <td class="d-flex gap-2">
+                                <a class="btn btn-sm btn-outline-primary" asp-action="ChangeRole" asp-route-id="@user.Id">Change role</a>
+
+                                @if (user.IsBlocked)
+                                {
+                                    <form method="post" asp-action="Unblock" asp-route-id="@user.Id">
+                                        <button type="submit" class="btn btn-sm btn-success">Unblock</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form method="post" asp-action="Block" asp-route-id="@user.Id">
+                                        <button type="submit" class="btn btn-sm btn-danger">Block</button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,109 @@
+@using MvC_SystemMovies.Models
+@model Movie
+@{
+    ViewData["Title"] = Model.Title;
+    var reviews = ViewBag.Reviews as List<Review> ?? new List<Review>();
+    double avgRating = ViewBag.AverageRating;
+    bool hasReviewed = ViewBag.HasReviewed;
+}
+
+<div class="container my-4">
+    <div class="row">
+        <div class="col-md-4">
+            <img src="~/images/movies/@Model.Minigm" class="img-fluid rounded" alt="@Model.Title" onerror="this.style.display='none'" />
+        </div>
+        <div class="col-md-8">
+            <h1>@Model.Title</h1>
+            <p>@Model.Description</p>
+            <p><strong>Price:</strong> @Model.Price.ToString("C")</p>
+            <p><strong>Category:</strong> @Model.Category?.Name &nbsp; | &nbsp; <strong>Cinema:</strong> @Model.Cinema?.Name</p>
+            <p><strong>Release date:</strong> @Model.DateTime</p>
+            <p>
+                <strong>Rating:</strong>
+                @if (reviews.Count > 0)
+                {
+                    <span>@avgRating.ToString("0.0") / 5 (@reviews.Count review@(reviews.Count == 1 ? "" : "s"))</span>
+                }
+                else
+                {
+                    <span class="text-muted">No reviews yet</span>
+                }
+            </p>
+
+            <div class="d-flex gap-2">
+                <form method="post" asp-area="Customer" asp-controller="Cart" asp-action="Add">
+                    <input type="hidden" name="movieId" value="@Model.Id" />
+                    <button type="submit" class="btn btn-primary">Add to cart</button>
+                </form>
+                <button type="button" class="btn btn-outline-danger favorite-btn" data-movie-id="@Model.Id">♥ Favorite</button>
+            </div>
+        </div>
+    </div>
+
+    <hr />
+
+    <h3>Reviews &amp; comments</h3>
+
+    @if (User.Identity?.IsAuthenticated == true && !hasReviewed)
+    {
+        <form method="post" asp-area="Customer" asp-controller="Review" asp-action="Add" class="mb-4">
+            <input type="hidden" name="movieId" value="@Model.Id" />
+            <div class="mb-2">
+                <label class="form-label">Your rating</label>
+                <select name="rating" class="form-select" style="max-width:150px">
+                    <option value="5">5 - Excellent</option>
+                    <option value="4">4 - Good</option>
+                    <option value="3">3 - Average</option>
+                    <option value="2">2 - Poor</option>
+                    <option value="1">1 - Terrible</option>
+                </select>
+            </div>
+            <div class="mb-2">
+                <label class="form-label">Comment</label>
+                <textarea name="comment" class="form-control" rows="3" maxlength="1000"></textarea>
+            </div>
+            <button type="submit" class="btn btn-success">Submit review</button>
+        </form>
+    }
+    else if (!User.Identity?.IsAuthenticated ?? false)
+    {
+        <p><a asp-area="Identity" asp-page="/Account/Login">Log in</a> to write a review.</p>
+    }
+    else
+    {
+        <p class="text-muted">You already reviewed this movie.</p>
+    }
+
+    @foreach (var review in reviews)
+    {
+        <div class="border rounded p-3 mb-2">
+            <strong>@(review.User?.FullName ?? review.User?.UserName)</strong>
+            <span class="text-warning">@(new string('★', review.Rating))@(new string('☆', 5 - review.Rating))</span>
+            <p class="mb-0">@review.Comment</p>
+            <small class="text-muted">@review.CreatedOn.ToString("g")</small>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.favorite-btn').forEach(function (btn) {
+            btn.addEventListener('click', async function () {
+                const movieId = btn.dataset.movieId;
+                const response = await fetch('/Customer/Favorite/Toggle', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ movieId: parseInt(movieId) })
+                });
+                if (response.status === 401) {
+                    window.location.href = '/Identity/Account/Login';
+                    return;
+                }
+                const data = await response.json();
+                btn.classList.toggle('btn-outline-danger', !data.isFavorite);
+                btn.classList.toggle('btn-danger', data.isFavorite);
+                btn.textContent = data.isFavorite ? '♥ Favorited' : '♥ Favorite';
+            });
+        });
+    </script>
+}

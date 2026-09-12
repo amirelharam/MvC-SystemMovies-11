@@ -1,0 +1,76 @@
+@using MvC_SystemMovies.Models
+@model List<CartItem>
+@{
+    ViewData["Title"] = "Checkout";
+    decimal total = ViewBag.Total;
+    var shippingCompanies = ViewBag.ShippingCompanies as List<ShippingCompany> ?? new List<ShippingCompany>();
+}
+
+<div class="container my-4">
+    <h1>Checkout</h1>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Order summary</h4>
+            <ul class="list-group mb-3">
+                @foreach (var item in Model)
+                {
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>@item.Movie?.Title x @item.Quantity</span>
+                        <span>@((item.Quantity * (item.Movie?.Price ?? 0)).ToString("C"))</span>
+                    </li>
+                }
+            </ul>
+            <h5>Subtotal: @total.ToString("C")</h5>
+        </div>
+
+        <div class="col-md-6">
+            <form method="post" asp-action="PlaceOrder">
+                <h4>Shipping</h4>
+                <div class="mb-3">
+                    <label class="form-label">Shipping company</label>
+                    <select name="shippingCompanyId" class="form-select">
+                        <option value="">No shipping (digital ticket only)</option>
+                        @foreach (var company in shippingCompanies)
+                        {
+                            <option value="@company.Id">@company.Name - @company.Price.ToString("C") (@company.EstimatedDays days)</option>
+                        }
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Shipping / delivery address</label>
+                    <input type="text" name="shippingAddress" class="form-control" placeholder="Optional" />
+                </div>
+
+                <h4>Payment (simulated gateway)</h4>
+                <div class="mb-3">
+                    <label class="form-label">Payment method</label>
+                    <select name="paymentMethod" class="form-select" id="paymentMethod">
+                        <option value="Card">Credit / Debit card</option>
+                        <option value="Cash">Cash on delivery</option>
+                    </select>
+                </div>
+                <div class="mb-3" id="cardFields">
+                    <label class="form-label">Card number</label>
+                    <input type="text" name="cardNumber" class="form-control" placeholder="4111 1111 1111 1111" />
+                    <small class="text-muted">Test tip: a card number ending in "0000" simulates a declined payment.</small>
+                </div>
+
+                <button type="submit" class="btn btn-success btn-lg w-100">Pay &amp; place order</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('paymentMethod').addEventListener('change', function () {
+            document.getElementById('cardFields').style.display = this.value === 'Card' ? 'block' : 'none';
+        });
+    </script>
+}

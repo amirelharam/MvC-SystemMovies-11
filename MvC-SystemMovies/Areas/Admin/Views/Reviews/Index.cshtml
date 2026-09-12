@@ -1,0 +1,37 @@
+@using MvC_SystemMovies.Models
+@model List<Review>
+@{
+    ViewData["Title"] = "Reviews moderation";
+}
+
+<div class="container">
+    <h2 class="display-6 my-3">Reviews &amp; comments moderation</h2>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+
+    <table class="table table-hover">
+        <thead>
+            <tr><th>Movie</th><th>User</th><th>Rating</th><th>Comment</th><th>Date</th><th></th></tr>
+        </thead>
+        <tbody>
+            @foreach (var review in Model)
+            {
+                <tr>
+                    <td>@review.Movie?.Title</td>
+                    <td>@(review.User?.FullName ?? review.User?.Email)</td>
+                    <td>@review.Rating / 5</td>
+                    <td>@review.Comment</td>
+                    <td>@review.CreatedOn.ToString("g")</td>
+                    <td>
+                        <form method="post" asp-action="Delete" asp-route-id="@review.Id">
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

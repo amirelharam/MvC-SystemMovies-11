@@ -1,0 +1,58 @@
+@using MvC_SystemMovies.Models
+@model Order
+@{
+    ViewData["Title"] = $"Order #{Model.Id}";
+}
+
+<div class="container my-4">
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+
+    <h1>Order #@Model.Id</h1>
+    <p>Status: <span id="status-@Model.Id" class="badge bg-info">@Model.Status</span></p>
+    <p>Payment: @Model.PaymentStatus (@Model.PaymentMethod) - Transaction: @Model.PaymentTransactionId</p>
+    @if (Model.ShippingCompany != null)
+    {
+        <p>Shipping via @Model.ShippingCompany.Name to @Model.ShippingAddress</p>
+    }
+    @if (!string.IsNullOrEmpty(Model.TrackingNumber))
+    {
+        <p>Tracking number: <strong>@Model.TrackingNumber</strong></p>
+    }
+
+    <table class="table">
+        <thead><tr><th>Movie</th><th>Qty</th><th>Unit price</th><th>Subtotal</th></tr></thead>
+        <tbody>
+            @foreach (var item in Model.OrderItems)
+            {
+                <tr>
+                    <td>@item.Movie?.Title</td>
+                    <td>@item.Quantity</td>
+                    <td>@item.UnitPrice.ToString("C")</td>
+                    <td>@((item.Quantity * item.UnitPrice).ToString("C"))</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h4>Total: @Model.TotalAmount.ToString("C")</h4>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/hubs/notifications")
+            .withAutomaticReconnect()
+            .build();
+
+        connection.on("OrderStatusChanged", function (data) {
+            const el = document.getElementById("status-" + data.id);
+            if (el) el.textContent = data.status;
+        });
+
+        connection.start().catch(err => console.error(err.toString()));
+    </script>
+}

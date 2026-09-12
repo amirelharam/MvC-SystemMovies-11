@@ -1,0 +1,62 @@
+@using MvC_SystemMovies.Models
+@model List<CartItem>
+@{
+    ViewData["Title"] = "My cart";
+    decimal total = ViewBag.Total;
+}
+
+<div class="container my-4">
+    <h1>My cart</h1>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    @if (Model.Count == 0)
+    {
+        <p>Your cart is empty. <a href="/Movies">Browse movies</a></p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Movie</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Subtotal</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Movie?.Title</td>
+                        <td>@item.Movie?.Price.ToString("C")</td>
+                        <td>
+                            <form method="post" asp-action="UpdateQuantity" class="d-flex gap-1">
+                                <input type="hidden" name="cartItemId" value="@item.Id" />
+                                <input type="number" name="quantity" value="@item.Quantity" min="1" class="form-control form-control-sm" style="width:70px" />
+                                <button type="submit" class="btn btn-sm btn-outline-secondary">Update</button>
+                            </form>
+                        </td>
+                        <td>@((item.Quantity * (item.Movie?.Price ?? 0)).ToString("C"))</td>
+                        <td>
+                            <form method="post" asp-action="Remove">
+                                <input type="hidden" name="cartItemId" value="@item.Id" />
+                                <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="text-end">
+            <h4>Total: @total.ToString("C")</h4>
+            <a asp-action="Checkout" class="btn btn-success btn-lg">Proceed to checkout</a>
+        </div>
+    }
+</div>

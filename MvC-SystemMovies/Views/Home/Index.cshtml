@@ -1,0 +1,268 @@
+﻿@{
+    ViewData["Title"] = "Cinema";
+}
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        background: #050505;
+        color: white;
+        font-family: Arial, sans-serif;
+    }
+
+   
+
+    .cinema-nav {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 10;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 22px 60px;
+        background: rgba(0, 0, 0, 0.35);
+        backdrop-filter: blur(8px);
+    }
+
+    .logo {
+        font-size: 28px;
+        font-weight: bold;
+        letter-spacing: 2px;
+    }
+
+        .logo span {
+            color: #e50914;
+        }
+
+    .nav-links {
+        display: flex;
+        gap: 30px;
+    }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+            .nav-links a:hover {
+                color: #e50914;
+            }
+
+   
+
+    .hero {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        padding: 0 8%;
+        position: relative;
+        background: linear-gradient( 90deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 40%, rgba(0,0,0,0.15) 100% ), url('/images/cinema-home.jpg');
+        background-size: cover;
+        background-position: center;
+    }
+
+    .hero-content {
+        max-width: 650px;
+        animation: heroAppear 1.2s ease forwards;
+    }
+
+        .hero-content h1 {
+            font-size: clamp(45px, 7vw, 85px);
+            line-height: 1;
+            margin-bottom: 25px;
+            font-weight: 800;
+        }
+
+            .hero-content h1 span {
+                color: #e50914;
+            }
+
+        .hero-content p {
+            color: #d0d0d0;
+            font-size: 19px;
+            line-height: 1.7;
+            margin-bottom: 35px;
+        }
+
+   
+
+    .hero-buttons {
+        display: flex;
+        gap: 15px;
+    }
+
+    .btn-movie {
+        display: inline-block;
+        padding: 14px 30px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+
+    .btn-primary-movie {
+        background: #e50914;
+        color: white;
+    }
+
+        .btn-primary-movie:hover {
+            background: #b20710;
+            color: white;
+            transform: translateY(-3px);
+        }
+
+    .btn-outline-movie {
+        border: 1px solid white;
+        color: white;
+    }
+
+        .btn-outline-movie:hover {
+            background: white;
+            color: black;
+            transform: translateY(-3px);
+        }
+
+   
+
+    .scroll-down {
+        position: absolute;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 13px;
+        color: #aaa;
+        animation: bounce 1.8s infinite;
+    }
+
+    
+
+    @@keyframes heroAppear {
+
+        from {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes bounce {
+
+        0%, 100% {
+            transform: translate(-50%, 0);
+        }
+
+        50% {
+            transform: translate(-50%, -10px);
+        }
+    }
+
+
+
+    @@media (max-width: 768px) {
+
+        .cinema-nav {
+            padding: 20px;
+        }
+
+        .nav-links {
+            display: none;
+        }
+
+        .hero {
+            padding: 0 25px;
+            background-position: center;
+        }
+
+        .hero-content h1 {
+            font-size: 50px;
+        }
+
+        .hero-content p {
+            font-size: 16px;
+        }
+
+        .hero-buttons {
+            flex-direction: column;
+            max-width: 220px;
+        }
+    }
+</style>
+
+
+
+
+<nav class="cinema-nav">
+
+    <div class="logo">
+        CINEMA<span>+</span>
+    </div>
+
+    <div class="nav-links">
+
+        <a href="/Customer/Home/Index">
+            Home
+        </a>
+
+        <a href="/Customer/Cinema/Index">
+            Cinemas
+        </a>
+
+        <a href="/Customer/Movie/Index">
+            Movies
+        </a>
+
+    </div>
+
+</nav>
+
+
+
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <h1>
+            Your Movie.
+            <br />
+            Your <span>Experience.</span>
+        </h1>
+
+        <p>
+            Discover the latest movies, explore amazing cinemas,
+            and book your favorite seats in just a few clicks.
+        </p>
+
+        <div class="hero-buttons">
+
+            <a href="/Customer/Movie/Index"
+               class="btn-movie btn-primary-movie">
+                Explore Movies 🎬
+            </a>
+
+            <a href="/Customer/Cinema/Index"
+               class="btn-movie btn-outline-movie">
+                Find a Cinema
+            </a>
+
+        </div>
+
+    </div>
+
+    <div class="scroll-down">
+        SCROLL TO EXPLORE ↓
+    </div>
+
+</section>

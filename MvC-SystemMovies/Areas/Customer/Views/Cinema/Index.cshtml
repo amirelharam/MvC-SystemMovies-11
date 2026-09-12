@@ -1,0 +1,201 @@
+﻿@using MvC_SystemMovies.Models
+@model List<Cinema>
+
+<style>
+    body {
+        margin: 0;
+        background-color: #f5f5f5;
+    }
+
+    
+    .cinema-navbar {
+        background-color: #000;
+        color: white;
+        padding: 20px 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    }
+
+        .cinema-navbar h2 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+    
+    .cinema-page {
+        min-height: calc(100vh - 150px);
+        padding: 50px 30px;
+    }
+
+    .cinema-title {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+        .cinema-title h1 {
+            font-size: 40px;
+            font-weight: bold;
+            color: #111;
+        }
+
+        .cinema-title p {
+            color: #777;
+            font-size: 18px;
+        }
+
+    
+    .cinema-cards {
+        display: flex;
+        justify-content: center;
+        align-items: stretch;
+        flex-wrap: wrap;
+        gap: 25px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+   
+    .cinema-card {
+        width: 280px;
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease;
+    }
+
+        .cinema-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+        }
+
+        .cinema-card img {
+            width: 100%;
+            height: 190px;
+            object-fit: cover;
+            display: block;
+        }
+
+    .cinema-card-body {
+        padding: 20px;
+        text-align: center;
+    }
+
+        .cinema-card-body h3 {
+            margin-bottom: 10px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .cinema-card-body p {
+            color: #777;
+            margin-bottom: 20px;
+        }
+
+    .cinema-btn {
+        display: inline-block;
+        background-color: #000;
+        color: white;
+        text-decoration: none;
+        padding: 10px 22px;
+        border-radius: 8px;
+        transition: 0.3s;
+    }
+
+        .cinema-btn:hover {
+            background-color: #333;
+            color: white;
+            transform: scale(1.05);
+        }
+
+
+    .cinema-footer {
+        background-color: #000;
+        color: white;
+        text-align: center;
+        padding: 25px;
+    }
+
+        .cinema-footer p {
+            margin: 0;
+            color: #ccc;
+        }
+
+ 
+    @@media (max-width: 600px) {
+        .cinema-navbar {
+            padding: 18px;
+        }
+
+            .cinema-navbar h2 {
+                font-size: 22px;
+            }
+
+        .cinema-page {
+            padding: 35px 15px;
+        }
+
+        .cinema-title h1 {
+            font-size: 30px;
+        }
+
+        .cinema-card {
+            width: 100%;
+            max-width: 330px;
+        }
+    }
+</style>
+
+
+
+<nav class="cinema-navbar">
+    <h2>Welcome to Cinema 🎬</h2>
+</nav>
+
+
+
+<main class="cinema-page">
+
+    <div class="cinema-title">
+        <h1>Our Cinemas</h1>
+        <p>Choose your favorite cinema and enjoy your movie.</p>
+    </div>
+
+    <div class="cinema-cards">
+
+        @foreach (var item in Model)
+        {
+            <div class="cinema-card">
+
+                <img src="~/images/cinema/cinema1.jpg" class="card-img-top" alt="Movies img">
+
+                <div class="cinema-card-body">
+
+                    <h3>@item.Name</h3>
+
+                    <p>
+                        Enjoy the best movies with us 🍿
+                    </p>
+
+                    <a href="/Customer/Movie/index/@item.Id"
+                       class="cinema-btn">
+                        Details Cinema
+                    </a>
+
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+</main>
+
+
+<footer class="cinema-footer">
+    <p>© 2026 Cinema System — All Rights Reserved 🎬</p>
+</footer>

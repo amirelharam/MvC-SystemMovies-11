@@ -1,0 +1,52 @@
+@using MvC_SystemMovies.Models
+@model List<Order>
+@{
+    ViewData["Title"] = "My orders";
+}
+
+<div class="container my-4">
+    <h1>My orders</h1>
+
+    @if (Model.Count == 0)
+    {
+        <p>You have no orders yet.</p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr><th>#</th><th>Date</th><th>Total</th><th>Status</th><th>Payment</th><th></th></tr>
+            </thead>
+            <tbody>
+                @foreach (var order in Model)
+                {
+                    <tr>
+                        <td>@order.Id</td>
+                        <td>@order.OrderDate.ToString("g")</td>
+                        <td>@order.TotalAmount.ToString("C")</td>
+                        <td><span id="status-@order.Id">@order.Status</span></td>
+                        <td>@order.PaymentStatus</td>
+                        <td><a class="btn btn-sm btn-outline-primary" asp-action="Details" asp-route-id="@order.Id">Details</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/hubs/notifications")
+            .withAutomaticReconnect()
+            .build();
+
+        connection.on("OrderStatusChanged", function (data) {
+            const el = document.getElementById("status-" + data.id);
+            if (el) el.textContent = data.status;
+        });
+
+        connection.start().catch(err => console.error(err.toString()));
+    </script>
+}

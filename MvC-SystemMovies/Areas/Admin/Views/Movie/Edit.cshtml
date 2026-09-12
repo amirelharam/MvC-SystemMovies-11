@@ -1,0 +1,53 @@
+@using MvC_SystemMovies.Models
+@model Movie
+<div class="container">
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="Id" value="@Model.Id" />
+        <div class="mb-3">
+            <label for="Title" class="form-label">Title</label>
+            <input type="text" name="Title" class="form-control" id="Title" value="@Model.Title" required>
+        </div>
+        <div class="mb-3">
+            <label for="Description" class="form-label">Description</label>
+            <input type="text" name="Description" class="form-control" id="Description" value="@Model.Description">
+        </div>
+        <div class="mb-3">
+            <label for="Price" class="form-label">Price</label>
+            <input type="number" step="0.01" min="0" name="Price" class="form-control" id="Price" value="@Model.Price" required>
+        </div>
+        <div class="mb-3">
+            <label for="Status" class="form-label">Status</label>
+            <select name="Status" class="form-control" id="Status">
+                <option value="true" selected="@(Model.Status)">Active</option>
+                <option value="false" selected="@(!Model.Status)">Inactive</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="DateTime" class="form-label">Date</label>
+            <input type="date" name="DateTime" class="form-control" id="DateTime" value="@Model.DateTime.ToString("yyyy-MM-dd")" required>
+        </div>
+        <div class="mb-3">
+            <label for="CategoryId" class="form-label">Category</label>
+            <select name="CategoryId" class="form-control" id="CategoryId">
+                @foreach (var category in (IEnumerable<Category>)ViewBag.Categories)
+                {
+                    <option value="@category.Id" selected="@(category.Id == Model.CategoryId)">@category.Name</option>
+                }
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="CinemaId" class="form-label">Cinema</label>
+            <select name="CinemaId" class="form-control" id="CinemaId">
+                @foreach (var cinema in (IEnumerable<Cinema>)ViewBag.Cinemas)
+                {
+                    <option value="@cinema.Id" selected="@(cinema.Id == Model.CinemaId)">@cinema.Name</option>
+                }
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="File" class="form-label">Poster Image (leave empty to keep current)</label>
+            <input type="file" name="File" class="form-control" id="File" accept="image/*">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>

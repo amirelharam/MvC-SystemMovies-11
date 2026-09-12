@@ -1,0 +1,56 @@
+@using MvC_SystemMovies.Models
+@model Order
+@{
+    ViewData["Title"] = $"Order #{Model.Id}";
+}
+
+<div class="container">
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+
+    <h2 class="display-6 my-3">Order #@Model.Id</h2>
+    <p>Customer: @(Model.User?.FullName ?? Model.User?.Email)</p>
+    <p>Payment: @Model.PaymentStatus (@Model.PaymentMethod) - Transaction: @Model.PaymentTransactionId</p>
+    @if (Model.ShippingCompany != null)
+    {
+        <p>Shipping via @Model.ShippingCompany.Name to @Model.ShippingAddress</p>
+    }
+
+    <table class="table">
+        <thead><tr><th>Movie</th><th>Qty</th><th>Unit price</th><th>Subtotal</th></tr></thead>
+        <tbody>
+            @foreach (var item in Model.OrderItems)
+            {
+                <tr>
+                    <td>@item.Movie?.Title</td>
+                    <td>@item.Quantity</td>
+                    <td>@item.UnitPrice.ToString("C")</td>
+                    <td>@((item.Quantity * item.UnitPrice).ToString("C"))</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <h4>Total: @Model.TotalAmount.ToString("C")</h4>
+
+    <hr />
+
+    <h4>Update status</h4>
+    <form method="post" asp-action="UpdateStatus" asp-route-id="@Model.Id" class="row g-2">
+        <div class="col-auto">
+            <select name="status" class="form-select">
+                @foreach (var status in Enum.GetValues<OrderStatus>())
+                {
+                    <option value="@status" selected="@(status == Model.Status)">@status</option>
+                }
+            </select>
+        </div>
+        <div class="col-auto">
+            <input type="text" name="trackingNumber" class="form-control" value="@Model.TrackingNumber" placeholder="Tracking number (optional)" />
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </form>
+</div>

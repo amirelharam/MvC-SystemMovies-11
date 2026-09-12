@@ -1,0 +1,17 @@
+﻿@model MvC_SystemMovies.Models.Cinema
+<div class="container">
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="Id" value="@Model.Id" />
+        <div class="mb-3">
+            <label for="Name" class="form-label">Title</label>
+            <input type="text" name="Name" class="form-control" id="Name" value="@Model.Name">
+        </div>
+
+        <div class="mb-3">
+            <label for="img" class="form-label">img</label>
+            <input type="file" name="File" class="form-control" id="File">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+</div>

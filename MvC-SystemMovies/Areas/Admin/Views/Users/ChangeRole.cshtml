@@ -1,0 +1,32 @@
+@using MvC_SystemMovies.Areas.Admin.Models
+@model ChangeRoleViewModel
+@{
+    ViewData["Title"] = "Change role";
+}
+
+<div class="container">
+    <h2 class="display-6 my-3">Change role for @Model.Email</h2>
+
+    <form method="post" asp-action="ChangeRole">
+        <input type="hidden" asp-for="UserId" />
+        <input type="hidden" asp-for="Email" />
+
+        <div class="mb-3">
+            <label class="form-label">Current role</label>
+            <input class="form-control" value="@Model.CurrentRole" disabled />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="SelectedRole" class="form-label">New role</label>
+            <select asp-for="SelectedRole" class="form-select">
+                @foreach (var role in Model.AvailableRoles)
+                {
+                    <option value="@role" selected="@(role == Model.SelectedRole)">@role</option>
+                }
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
